@@ -52,7 +52,7 @@ use_gzip_http_content_encoding = true
 
 [/var/log/messages]
 log_group_name = ${cannonical_name}
-log_stream_name = /ec2/{instance_id}/var/log/messages.{instance_id}
+log_stream_name = /var/log/messages.{instance_id}
 file = /var/log/messages
 datetime_format = %Y-%m-%d %H:%M:%S
 buffer_duration = 5000
