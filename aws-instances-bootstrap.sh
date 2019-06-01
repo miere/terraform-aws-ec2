@@ -25,11 +25,6 @@ echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
 yum update -y
 yum install -y ruby python-pip
 
-# Setting up CodeDeploy agent
-curl $URL_CODE_DEPLOY --output codedeploy-agent.noarch.rpm
-yum install -y codedeploy-agent.noarch.rpm
-service codedeploy-agent start
-
 # Setting up Chamber
 curl \
     -o /bin/chamber \
@@ -113,6 +108,11 @@ yum -y install nodejs
 # Installing AWS Corretto JRE 8
 curl $URL_CORRETTO -o java8.rpm
 yum install -y java8.rpm
+
+# Setting up CodeDeploy agent
+curl $URL_CODE_DEPLOY --output codedeploy-agent.noarch.rpm
+yum install -y codedeploy-agent.noarch.rpm
+service codedeploy-agent start
 
 # Custom Script
 ${custom_script}
