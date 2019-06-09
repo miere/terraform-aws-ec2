@@ -31,8 +31,11 @@ curl \
     -LOs https://github.com/segmentio/chamber/releases/download/v2.3.3/chamber-v2.3.3-linux-amd64
 
 chmod +x /bin/chamber
-chamber export --format dotenv global | sed 's/\(.*\)/export \1/;s/\\\!/\!/g' > /opt/env-vars.sh
-chamber export --format dotenv ${cannonical_name} | sed 's/\(.*\)/export \1/;s/\\\!/\!/g' >> /opt/env-vars.sh
+cat <<EOF > /opt/env-vars.sh
+eval $$(chamber export --format dotenv global | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
+eval $$(chamber export --format dotenv ${cannonical_name} | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
+EOF
+
 . /opt/env-vars.sh
 
 # Setting up CloudWatch Agent
