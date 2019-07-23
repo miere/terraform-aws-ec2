@@ -29,23 +29,10 @@ data "template_file" "init" {
   }
 }
 
-data "aws_ssm_parameter" "ssh_public_key" {
-  name = "${var.ssh_public_key_ssm_name == "" ? "SSH_PUB_DEPLOYMENT_KEY" : var.ssh_public_key_ssm_name}"
-  with_decryption = true
-  count = "${var.ssh_public_key_ssm_name == "" ? 0 : 1}"
-}
-
-resource "aws_key_pair" "ssh_public_key" {
-  key_name = "${local.cannonical_name}"
-  public_key = "${data.aws_ssm_parameter.ssh_public_key.value}"
-  count = "${var.ssh_public_key_ssm_name == "" ? 0 : 1}"
-}
-
 resource "aws_launch_template" "default" {
   name = "${local.cannonical_name}"
   description = "Managed by Terraform"
 
-  key_name = "${local.cannonical_name}"
   instance_type = "${var.aws_instance_type}"
   user_data = "${base64encode(data.template_file.init.rendered)}"
   image_id = "${data.aws_ami.amazon-linux-2.id}"

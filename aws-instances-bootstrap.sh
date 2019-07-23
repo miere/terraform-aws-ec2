@@ -32,8 +32,8 @@ curl \
 
 chmod +x /bin/chamber
 cat <<EOF > /opt/env-vars.sh
-eval $$(chamber export --format dotenv global | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
-eval $$(chamber export --format dotenv ${cannonical_name} | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
+eval \$(chamber export --format dotenv global | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
+eval \$(chamber export --format dotenv ${cannonical_name} | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
 EOF
 
 . /opt/env-vars.sh
