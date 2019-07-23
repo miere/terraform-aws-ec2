@@ -89,6 +89,11 @@ variable "aws_asg_instances_max" {
   default = "3"
 }
 
+variable "ssh_public_key_ssm_name" {
+  description = "The SSM Parameter name containing the SSH public key to log into the EC2 instances. Optional."
+  default = ""
+}
+
 variable "dns_entry" {
   description = "The Register A DNS entry that will be created for your service. It will be used as suffix for your 'aws_hosted_domain'"
 }

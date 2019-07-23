@@ -4,11 +4,12 @@
  */
 locals {
   instance_bootstrap_script = "${path.module}/aws-instances-bootstrap.sh"
-  instance_bootstrap_empty_script = "${path.module}/aws-instances-bootstrap-empty.sh"
+  ec2_user_data_file = "${var.custom_script == "-" ? local.instance_bootstrap_script : var.custom_script}"
 }
 
 data "aws_ami" "amazon-linux-2" {
   most_recent = true
+  owners = ["amazon"]
   filter { name   = "owner-alias" values = ["amazon"] }
   filter { name   = "name" values = ["amzn2-ami-hvm-*-x86_64-ebs"] }
   filter { name   = "architecture" values = ["x86_64"] }
@@ -19,24 +20,25 @@ output "aws_ami_name" {
 }
 
 data "template_file" "init" {
-  template = "${file(local.instance_bootstrap_script)}"
+  template = "${file(local.ec2_user_data_file)}"
   vars = {
     region = "${var.aws_region}"
     cannonical_name = "${local.cannonical_name}"
     app_name = "${local.app_name}"
     environment = "${local.suffix}"
-    custom_script = "${file(var.custom_script == "-" ? local.instance_bootstrap_empty_script : var.custom_script)}"
   }
 }
 
 data "aws_ssm_parameter" "ssh_public_key" {
-  name = "SSH_PUB_DEPLOYMENT_KEY"
+  name = "${var.ssh_public_key_ssm_name == "" ? "SSH_PUB_DEPLOYMENT_KEY" : var.ssh_public_key_ssm_name}"
   with_decryption = true
+  count = "${var.ssh_public_key_ssm_name == "" ? 0 : 1}"
 }
 
 resource "aws_key_pair" "ssh_public_key" {
   key_name = "${local.cannonical_name}"
   public_key = "${data.aws_ssm_parameter.ssh_public_key.value}"
+  count = "${var.ssh_public_key_ssm_name == "" ? 0 : 1}"
 }
 
 resource "aws_launch_template" "default" {

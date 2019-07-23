@@ -89,7 +89,7 @@ logfile=/var/log/supervisord.log
 user=root
 
 [program:application]
-command=/opt/application/${app_name}.sh
+command=/opt/application/run.sh
 directory=/opt/application
 autostart=false
 autorestart=false
@@ -116,6 +116,3 @@ yum install -y java8.rpm
 curl $URL_CODE_DEPLOY --output codedeploy-agent.noarch.rpm
 yum install -y codedeploy-agent.noarch.rpm
 service codedeploy-agent start
-
-# Custom Script
-${custom_script}
