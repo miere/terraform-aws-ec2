@@ -25,51 +25,6 @@ echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
 yum update -y
 yum install -y ruby python-pip
 
-# Setting up Chamber
-curl \
-    -o /bin/chamber \
-    -LOs https://github.com/segmentio/chamber/releases/download/v2.3.3/chamber-v2.3.3-linux-amd64
-
-chmod +x /bin/chamber
-cat <<EOF > /opt/env-vars.sh
-eval \$(chamber export --format dotenv global | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
-eval \$(chamber export --format dotenv ${cannonical_name} | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
-EOF
-
-. /opt/env-vars.sh
-
-# Setting up CloudWatch Agent
-yum install -y awslogs
-
-sed -i -e 's/us-east-1/${region}/g' /etc/awslogs/awscli.conf
-
-cat <<EOF > /etc/awslogs/awslogs.conf
-[general]
-state_file = /var/lib/awslogs/agent-state
-use_gzip_http_content_encoding = true
-
-[/var/log/messages]
-log_group_name = ${cannonical_name}
-log_stream_name = /var/log/messages.{instance_id}
-file = /var/log/messages
-datetime_format = %Y-%m-%d %H:%M:%S
-buffer_duration = 5000
-initial_position = start_of_file
-
-[/opt/application/server.log]
-log_group_name = ${cannonical_name}
-log_stream_name = /ec2/opt/application/server.log.{instance_id}
-file = /opt/application/server.log
-datetime_format = %Y-%m-%d %H:%M:%S
-initial_position = start_of_file
-time_zone = UTC
-encoding = utf_8
-buffer_duration = 5000
-EOF
-
-systemctl start awslogsd
-systemctl enable awslogsd.service
-
 # Setting up Supervisord
 pip install supervisor
 
@@ -104,9 +59,48 @@ EOF
 
 supervisord -c /etc/supervisord.conf
 
-# NodeJS 8.X.X
-curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
-yum -y install nodejs
+# Setting up Chamber
+curl \
+    -o /bin/chamber \
+    -LOs https://github.com/segmentio/chamber/releases/download/v2.3.3/chamber-v2.3.3-linux-amd64
+
+chmod +x /bin/chamber
+cat <<EOF > /opt/env-vars.sh
+eval \$(chamber export --format dotenv global | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
+eval \$(chamber export --format dotenv ${config_prefix} | sed 's/\(.*\)/export \1/;s/\\\!/\!/g')
+EOF
+
+# Setting up CloudWatch Agent
+yum install -y awslogs
+
+sed -i -e 's/us-east-1/${region}/g' /etc/awslogs/awscli.conf
+
+cat <<EOF > /etc/awslogs/awslogs.conf
+[general]
+state_file = /var/lib/awslogs/agent-state
+use_gzip_http_content_encoding = true
+
+[/var/log/messages]
+log_group_name = ${cannonical_name}
+log_stream_name = /var/log/messages.{instance_id}
+file = /var/log/messages
+datetime_format = %Y-%m-%d %H:%M:%S
+buffer_duration = 5000
+initial_position = start_of_file
+
+[/var/log/application.log]
+log_group_name = ${cannonical_name}
+log_stream_name = /var/log/application.log.{instance_id}
+file = /var/log/application.log
+datetime_format = %Y-%m-%d %H:%M:%S
+initial_position = start_of_file
+time_zone = UTC
+encoding = utf_8
+buffer_duration = 5000
+EOF
+
+systemctl start awslogsd
+systemctl enable awslogsd.service
 
 # Installing AWS Corretto JRE 8
 curl $URL_CORRETTO -o java8.rpm

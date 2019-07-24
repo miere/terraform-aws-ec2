@@ -4,6 +4,7 @@ locals {
   app_name = "${var.name != "" ? var.name : var.dns_entry}"
   suffix = "${var.environment != "" ? var.environment : var.aws_region}"
   cannonical_name = "${join("-", list(local.app_name, local.suffix))}",
+  config_prefix = "${var.config_prefix != "" ? var.config_prefix : local.app_name}"
 }
 
 # Input Variables
@@ -74,6 +75,11 @@ variable "aws_lb_deregistration_delay" {
   default = "60"
 }
 
+variable "aws_lb_is_internal" {
+  description = "Defines whether the ALB is internal or not. Default: false"
+  default = false
+}
+
 variable "aws_asg_instances_desired" {
   description = "Desired number of instances on the ASG."
   default = "2"
@@ -103,9 +109,14 @@ variable "name" {
   default = ""
 }
 
+variable "config_prefix" {
+  description = "Optional prefix used for every SSM Parameter Store that will be retrieved as env var for your app."
+  default = ""
+}
+
 variable "custom_script" {
   description = "The custom script path. This script, if defined, will be run every time an instance is spin up."
-  default = "-"
+  default = ""
 }
 
 variable "environment" {

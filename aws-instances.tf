@@ -4,7 +4,7 @@
  */
 locals {
   instance_bootstrap_script = "${path.module}/aws-instances-bootstrap.sh"
-  ec2_user_data_file = "${var.custom_script == "-" ? local.instance_bootstrap_script : var.custom_script}"
+  ec2_user_data_file = "${var.custom_script == "" ? local.instance_bootstrap_script : var.custom_script}"
 }
 
 data "aws_ami" "amazon-linux-2" {
@@ -26,6 +26,7 @@ data "template_file" "init" {
     cannonical_name = "${local.cannonical_name}"
     app_name = "${local.app_name}"
     environment = "${local.suffix}"
+    config_prefix = "${local.config_prefix}"
   }
 }
 
