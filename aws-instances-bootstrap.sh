@@ -9,7 +9,7 @@
 # VARIABLES
 INSTANCE_ID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
 URL_CODE_DEPLOY=https://aws-codedeploy-${region}.s3.amazonaws.com/latest/codedeploy-agent.noarch.rpm
-URL_CORRETTO=https://d1f2yzg3dx5xke.cloudfront.net/java-1.8.0-amazon-corretto-1.8.0_202.b08-1.amzn2.x86_64.rpm
+URL_CORRETTO=https://d3pxv6yz143wms.cloudfront.net/11.0.4.11.1/java-11-amazon-corretto-devel-11.0.4.11-1.x86_64.rpm
 
 # MAIN
 mkdir -p /opt
