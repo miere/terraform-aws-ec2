@@ -63,7 +63,8 @@ locals {
           "cloudwatch:PutMetric*",
           "ssm:DescribeParameters",
           "ssm:GetParameters",
-          "ssm:GetParametersByPath"
+          "ssm:GetParametersByPath",
+          "ssm:UpdateInstanceInformation"
         ],
         "Resource" = "*"
       },
