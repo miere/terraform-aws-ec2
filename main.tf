@@ -20,3 +20,7 @@ output "aws_iam_role_name" {
 output "aws_route53_record" {
   value = "${aws_route53_record.default.name}"
 }
+
+output "aws_alb_listener_https" {
+  value = "${aws_alb_listener.https.arn}"
+}
