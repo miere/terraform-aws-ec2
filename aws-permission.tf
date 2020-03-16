@@ -8,55 +8,56 @@
 
 # Instance Profile
 resource "aws_iam_instance_profile" "default" {
-  name = "${local.cannonical_name}"
-  role = "${aws_iam_role.default.name}"
+  name = local.cannonical_name
+  role = aws_iam_role.default.name
 }
 
 # Configures the IAM Role required to perform the Lambda Execution
 resource "aws_iam_role" "default" {
-  name = "${replace(local.cannonical_name, "-", "_")}"
-  assume_role_policy = "${jsonencode(local.iam_role)}"
-  description = "Managed by Terraform"
+  name               = replace(local.cannonical_name, "-", "_")
+  assume_role_policy = jsonencode(local.iam_role)
+  description        = "Managed by Terraform"
 }
 
 # Configure Lambda to write Cloudwatch Logs
 resource "aws_iam_policy" "default" {
-  name = "${replace(local.cannonical_name, "-", "_")}"
-  path = "/"
+  name        = replace(local.cannonical_name, "-", "_")
+  path        = "/"
   description = "Managed by Terraform"
-  policy = "${jsonencode(local.iam_policy)}"
+  policy      = jsonencode(local.iam_policy)
 }
 
 # Attaching Policy to Role
 resource "aws_iam_role_policy_attachment" "default" {
-  role = "${aws_iam_role.default.name}"
-  policy_arn = "${aws_iam_policy.default.arn}"
+  role       = aws_iam_role.default.name
+  policy_arn = aws_iam_policy.default.arn
 }
 
 locals {
-
   # IAM Role
   iam_role = {
-    "Version" = "2012-10-17",
-    "Statement" = [{
-      "Effect" = "Allow",
-      "Principal" = {
-        "Service" = [
-          "ec2.amazonaws.com",
-          "application-autoscaling.amazonaws.com",
-          "codedeploy.amazonaws.com"
-        ]
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Effect" = "Allow"
+        "Principal" = {
+          "Service" = [
+            "ec2.amazonaws.com",
+            "application-autoscaling.amazonaws.com",
+            "codedeploy.amazonaws.com",
+          ]
+        }
+        "Action" = "sts:AssumeRole"
       },
-      "Action" = "sts:AssumeRole"
-    }]
+    ]
   }
 
   # IAM Policy
   iam_policy = {
-    Version = "2012-10-17",
+    Version = "2012-10-17"
     Statement = [
       {
-        "Effect" = "Allow",
+        "Effect" = "Allow"
         "Action" = [
           "ec2:DescribeTags",
           "logs:*",
@@ -64,12 +65,12 @@ locals {
           "ssm:DescribeParameters",
           "ssm:GetParameters",
           "ssm:GetParametersByPath",
-          "ssm:UpdateInstanceInformation"
-        ],
+          "ssm:UpdateInstanceInformation",
+        ]
         "Resource" = "*"
       },
       {
-        "Effect" = "Allow",
+        "Effect" = "Allow"
         "Action" = [
           "autoscaling:CompleteLifecycleAction",
           "autoscaling:DeleteLifecycleHook",
@@ -110,10 +111,10 @@ locals {
           "elasticloadbalancing:DescribeTargetHealth",
           "elasticloadbalancing:RegisterTargets",
           "elasticloadbalancing:DeregisterTargets",
-          "s3:GetObject"
-        ],
+          "s3:GetObject",
+        ]
         "Resource" = "*"
-      }
+      },
     ]
   }
 }
