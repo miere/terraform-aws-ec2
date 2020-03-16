@@ -52,6 +52,12 @@ resource "aws_alb_target_group" "default" {
 
   deregistration_delay = "${var.aws_lb_deregistration_delay}"
 
+  stickiness {
+    type            = "lb_cookie"
+    cookie_duration = "${var.aws_lb_cookie_duration}"
+    enabled         = "${var.aws_lb_enable_stickiness}"
+  }
+
   health_check {
     path = "${var.aws_lb_health_check_url}"
     interval = 5

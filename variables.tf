@@ -80,6 +80,16 @@ variable "aws_lb_is_internal" {
   default = false
 }
 
+variable "aws_lb_enable_stickiness" {
+  description = "Defines ALB should be routed to the same target"
+  default = false
+}
+
+variable "aws_lb_cookie_duration" {
+  description = "The time period in seconds"
+  default = 60
+}
+
 variable "aws_asg_instances_desired" {
   description = "Desired number of instances on the ASG."
   default = "2"
