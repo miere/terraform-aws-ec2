@@ -110,3 +110,5 @@ yum install -y java8.rpm
 curl $URL_CODE_DEPLOY --output codedeploy-agent.noarch.rpm
 yum install -y codedeploy-agent.noarch.rpm
 service codedeploy-agent start
+
+${custom_script}

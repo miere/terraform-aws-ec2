@@ -1,13 +1,12 @@
 /**
  * Domain related configurations, like DNS and Certificates.
  */
-
 data "aws_route53_zone" "domain" {
-  name = "${var.aws_hosted_domain}."
+  name = var.aws_hosted_domain
 }
 
 data "aws_acm_certificate" "wildcard" {
-  domain   = "*.${var.aws_hosted_domain}"
+  domain   = var.aws_certificate_domain == "" ? var.aws_hosted_domain : var.aws_certificate_domain
   statuses = ["ISSUED"]
 }
 

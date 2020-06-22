@@ -3,6 +3,8 @@ data "aws_vpc" "default" {
   id = var.aws_vpc_id
 }
 
+data "aws_region" "current" {}
+
 # Security Groups
 resource "aws_security_group" "instances" {
   name        = "${local.cannonical_name}-instances"

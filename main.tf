@@ -1,19 +1,8 @@
 # Configuring other providers
-provider "archive" {
-  version = "~> 1.1"
-}
-
-provider "external" {
-  version = "~> 1.0"
-}
-
-provider "template" {
-  version = "~> 2.0"
-}
-
-provider "null" {
-  version = "~> 2.0"
-}
+provider "archive" { version = "~> 1.1" }
+provider "external" { version = "~> 1.0" }
+provider "template" { version = "~> 2.0" }
+provider "null" { version = "~> 2.0" }
 
 # Output variables
 output "aws_asg_arn" {

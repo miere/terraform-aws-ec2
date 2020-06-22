@@ -2,16 +2,11 @@
 locals {
   fqdns_domain    = "${var.dns_entry}.${var.aws_hosted_domain}"
   app_name        = var.name != "" ? var.name : var.dns_entry
-  suffix          = var.environment != "" ? var.environment : var.aws_region
-  cannonical_name = join("-", [local.app_name, local.suffix])
+  cannonical_name = join("-", [local.app_name, var.environment])
   config_prefix   = var.config_prefix != "" ? var.config_prefix : local.app_name
 }
 
 # Input Variables
-variable "aws_region" {
-  description = "AWS region in which the artifact will be deployed to. It will be used by S3 and Code Deploy."
-}
-
 variable "aws_instance_type" {
   description = "AWS EC2 instance type that will be used to spin up the service. Default: t3.nano"
   default     = "t3.nano"
@@ -34,6 +29,11 @@ variable "aws_instance_web_protocol" {
 
 variable "aws_hosted_domain" {
   description = "AWS Route 53 hosted zone domain. e.g. my.domain.com"
+}
+
+variable "aws_certificate_domain" {
+  description = "AWS Certificate Domain. If not defined, the aws_hosted_domain will be used instead."
+  default = ""
 }
 
 variable "aws_vpc_id" {
